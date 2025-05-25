@@ -50,7 +50,7 @@ def get_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     logger.propagate = False
 
-    stream_handler = logging.StramHandler()
+    stream_handler = logging.StreamHandler()
     formatter = RadactingFormatter(fields=PII_FIELDS)
     stream_handler.setFormatter(formatter)
 
@@ -59,12 +59,12 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db():
+def get_db() -> MySQLConnection:
     """Returns a connection to the MySQL database using env variables."""
-    username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
-    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+    username: str = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password: str = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host: str = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name: str = os.getenv("PERSONAL_DATA_DB_NAME")
 
     return mysql.connector.connect(
             user=username,
@@ -72,3 +72,26 @@ def get_db():
             host=host,
             database=db_name
     )
+
+def main() -> None:
+    """
+    Retrieves all rows in the users table and logs each row,
+    redacting PII fields.
+    """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    field_names = [i[0] for i in cursor.description]
+
+    logger = get_logger()
+
+    for row in cursor:
+        message = "; ".join(f"{field}={value}" for field, value in zip(field_names, row)) + ";"
+        logger.info(message)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
