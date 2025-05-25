@@ -21,4 +21,3 @@ def hash_password(password: str) -> bytes:
     # Hash the password with the salt
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed
-
