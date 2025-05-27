@@ -13,7 +13,7 @@ class Auth:
         return (False)
 
     def authorization_header(self, request=None) -> List[str]:
-    """Returns None"""
+        """Returns None"""
         return (None)
 
     def current_user(self, request=None) -> TypeVar('User'):
