@@ -44,4 +44,3 @@ class Auth:
             return None
 
         return request.cookies.get(session_name)
-
