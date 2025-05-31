@@ -35,6 +35,7 @@ class Auth:
         return (None)
 
     def session_cookie(self, request=None):
+        """Get the session ID"""
         if request is None:
             return None
 
