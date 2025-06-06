@@ -14,6 +14,7 @@ class Auth:
     """Auth class to interact with the authentication database."""
 
     def __init__(self):
+        """Initialize the class"""
         self._db = DB()
 
     def _hash_password(self, password: str) -> bytes:
